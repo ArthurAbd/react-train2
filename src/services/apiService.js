@@ -27,6 +27,6 @@ class ApiService {
     }
 };
 
-const api = new ApiService();
-api.getAllPlanet()
+const Api = new ApiService();
+Api.getAllPlanet()
 .then((body) => console.log(body))

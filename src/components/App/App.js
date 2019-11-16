@@ -3,7 +3,6 @@ import Header from '../Header'
 import ListCountry from '../ListCountry'
 import CountryInfo from '../CountryInfo'
 import RandomCountry from '../RandomCountry'
-import API from '../../services/apiService'
 
 import './App.css';
 
