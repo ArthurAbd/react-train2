@@ -1,20 +1,34 @@
 import React from 'react';
+import Spinner from '../Spinner';
 
 import './ListCountry.css';
 
-export default () => {
-    return (
-        <div className='list-country col-4'>
-            <div className='bg-dark p-2 my-2 border-def'>
-                <div></div>
-                <ul className="list-group list-group-flush list-fix">
-                    <li class="list-group-item bg-dark">Cras justo odio</li>
-                    <li class="list-group-item bg-dark">Dapibus ac facilisis in</li>
-                    <li class="list-group-item bg-dark">Morbi leo risus</li>
-                    <li class="list-group-item bg-dark">Porta ac consectetur ac</li>
-                    <li class="list-group-item bg-dark">Vestibulum at eros</li>
-                </ul>
-            </div>
-        </div>
-    )
+export default class ListCountry extends React.Component {
+
+
+    renderList = (listCountries) => {
+        return listCountries.map((country) => {
+            return (
+                <li key={country}
+                className="list-group-item bg-dark"
+                onClick={() => this.props.onCountrySelected(country)}>
+                    {country}</li>
+            )
+        })
+    }
+
+    render() {
+        const {listCountries} = this.props;
+        if (!listCountries) {
+            return <Spinner />
+        }
+
+        const items = this.renderList(listCountries);
+
+        return (
+            <ul className="list-country list-group list-group-flush list-fix">
+                {items}
+            </ul>
+        )
+    }
 }

@@ -1,61 +1,97 @@
 import React from 'react';
-import Api from '../../services/ApiService'
+import Api from '../../services/ApiService';
+import Spinner from '../Spinner';
+import Error from '../Error'
 
 import './RandomCountry.css';
 
 export default class RandomCountry extends React.Component {
 
-    constructor() {
-        super();
-        this.state = {
-            name: null,
-            capital: null,
-            population: null,
-            area: null,
-            flag: null,
-        };
-        // this.api = new Api;
-        // this.updateCountry();
+    api = new Api();
+
+    state = {
+        country: {},
+        loading: true,
+        error: false
+    };
+
+    componentDidMount() {
+        console.log('componentDidMount')
+        if (this.props.names) {
+            this.getCountry()
+        }
     }
 
-    
+    componentDidUpdate(prevProps) {
+        console.log('componentDidUpdate')
+        if (prevProps.names !== this.props.names) {
+            this.getCountry();
+            this.interval = setInterval(this.getCountry, 10000);
+        }
+    }
 
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
     
+    onLoad = (country) => {
+        this.setState({
+            country,
+            loading: false
+         });
+    }
+    
+    onError = () => {
+        this.setState({
+            error: true,
+            loading: false
+        })
+    }
 
-    // updateCountry() {
-    //     this.api
-    //     .getOnePlanet('guatemala')
-    //     .then((country) => {
-    //         this.setState({
-    //             name: country.name,
-    //             capital: country.capital,
-    //             population: country.population,
-    //             area: country.area,
-    //             flag: country.flag,
-    //         })
-    //     })
-    // }
+    getCountry = () => {
+        const names = this.props.names
+        const numCountry = Math.floor(Math.random() * names.length);
+        console.log(names[numCountry])
+        this.api
+        .getOneCountry(names[numCountry])
+        .then(this.onLoad)
+        .catch(this.onError)
+    }
     
     render() {
-        
+        const { country, loading, error } = this.state;
+
+        const errorMessage = error ? <Error /> : null;
+        const spinner = loading ? <Spinner /> : null;
+        const countryView = !loading && !error ? <CountryView country={country} /> : null;
+
         return (
             <div className="random-country p-3 my-2 bg-dark border-def">
-                <div className="row">
-                    <div className="col-4 bg-dark">
-                        <img src="https://restcountries.eu/data/geo.svg" className="img-fluid" alt="Responsive"/>
-                    </div>
-                    <div className="col-8 bg-dark">
-                        <div className="p-3 bg-dark">
-                            <h2 className="bg-dark">Название</h2>
-                            <ul className="list-group list-group-flush list-fix">
-                                <li className="list-group-item bg-dark">Столица: </li>
-                                <li className="list-group-item bg-dark">Население: 1</li>
-                                <li className="list-group-item bg-dark">Площадь: 1</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                {errorMessage}
+                {spinner}
+                {countryView}
             </div>
         )
     }
+}
+
+const CountryView = ({country}) => {
+    const {name, capital, population, area, flag} = country;
+    return (
+        <div className="row">
+            <div className="col-4 bg-dark">
+                <img src={flag} className="img-fluid rounded" alt="Responsive"/>
+            </div>
+            <div className="col-8 bg-dark">
+                <div className="p-3 bg-dark">
+                    <h2 className="bg-dark">{name}</h2>
+                    <ul className="list-group list-group-flush list-fix">
+                        <li className="list-group-item bg-dark">Столица: {capital}</li>
+                        <li className="list-group-item bg-dark">Население: {population}</li>
+                        <li className="list-group-item bg-dark">Площадь: {area}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    )
 }
