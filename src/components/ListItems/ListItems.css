@@ -1,0 +1,15 @@
+.list-country {
+    height: auto;
+    max-height: 95vh;
+}
+
+.list-group-item {
+    background-color: #343a40;
+}
+
+.list-group-item:hover {
+    background-color: #3d434a;
+}
+.list-group-item:active {
+    background-color: #454b52;
+}

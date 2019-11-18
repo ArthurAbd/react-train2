@@ -41,9 +41,8 @@ export default class CountryInfo extends React.Component {
     }
 
     render() {
-        const {country: {name, capital, population, area,
-            flag, region, regionalBlocs,
-            currencies, borders, timezones}, loading} = this.state;
+        const {country: {name, capital, area,
+            flag, borders, timezones}, loading} = this.state;
 
         if (loading) {
             return <Spinner />

@@ -16,14 +16,12 @@ export default class RandomCountry extends React.Component {
     };
 
     componentDidMount() {
-        console.log('componentDidMount')
         if (this.props.names) {
             this.getCountry()
         }
     }
 
     componentDidUpdate(prevProps) {
-        console.log('componentDidUpdate')
         if (prevProps.names !== this.props.names) {
             this.getCountry();
             this.interval = setInterval(this.getCountry, 10000);
@@ -51,11 +49,10 @@ export default class RandomCountry extends React.Component {
     getCountry = () => {
         const names = this.props.names
         const numCountry = Math.floor(Math.random() * names.length);
-        console.log(names[numCountry])
         this.api
-        .getOneCountry(names[numCountry])
-        .then(this.onLoad)
-        .catch(this.onError)
+            .getOneCountry(names[numCountry])
+            .then(this.onLoad)
+            .catch(this.onError)
     }
     
     render() {
