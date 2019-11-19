@@ -22,10 +22,11 @@ export default class PageRegion extends React.Component {
     }
 
     getCountryByRegion() {
-        return new Promise(resolve, reject) {
-            this.props.api.getSearchByRegion(this.state.selectedItem)
-            .then((res) => resolve(res))
-        }
+        return new Promise((resolve, reject) => {
+            resolve(console.log('getCountryByRegion'))
+            // this.props.api.getSearchByRegion(this.state.selectedItem)
+            // .then((res) => resolve(res))
+        })
     }
     
     render() {
