@@ -1,7 +1,8 @@
 import React from 'react';
 import Api from '../../services/ApiService';
 import Spinner from '../Spinner';
-import Error from '../Error'
+import Error from '../Error';
+import PropTypes from 'prop-types';
 
 import './RandomCountry.css';
 
@@ -18,15 +19,16 @@ export default class RandomCountry extends React.Component {
     componentDidMount() {
         if (this.props.names) {
             this.getCountry()
+            this.interval = setInterval(this.getCountry, 1000);
         }
     }
 
-    componentDidUpdate(prevProps) {
-        if (prevProps.names !== this.props.names) {
-            this.getCountry();
-            this.interval = setInterval(this.getCountry, 10000);
-        }
-    }
+    // componentDidUpdate(prevProps) {
+    //     console.log(prevProps)
+    //     if (prevProps.names !== this.props.names) {
+    //         this.getCountry();
+    //     }
+    // }
 
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -47,10 +49,11 @@ export default class RandomCountry extends React.Component {
     }
 
     getCountry = () => {
-        const names = this.props.names
+        const names = this.props.names;
         const numCountry = Math.floor(Math.random() * names.length);
-        this.api
-            .getOneCountry(names[numCountry])
+        const {getOneCountry} = this.props;
+
+        getOneCountry(names[numCountry])
             .then(this.onLoad)
             .catch(this.onError)
     }
@@ -91,4 +94,13 @@ const CountryView = ({country}) => {
             </div>
         </div>
     )
+}
+
+RandomCountry.defaultProps = {
+    speedUpdateRandonCountry: 10000,
+    onSelected: () => {}
+}
+
+RandomCountry.propTypes = {
+    speedUpdateRandonCountry: PropTypes.number
 }

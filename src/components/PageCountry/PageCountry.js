@@ -1,34 +1,35 @@
 import React from 'react';
 import ListItems from '../ListItems'
-import CountryInfo from '../CountryInfo'
+import {Link} from 'react-router-dom'
 import Row from '../Row'
+
+import {ApiConsumer} from '../Api-context/Api-context'
 
 import './PageCountry.css'
 
-export default class Page extends React.Component {
-
-    state = {
-        selectedCountry: "Guatemala"
-    }
-
-    onSelected = (country) => {
-        this.setState({
-            selectedCountry: country
-        })
-    }
+export default class PageCountry extends React.Component {
     
     render() {
 
-        const listItems = (<ListItems 
-            getData={this.props.getData}
-            onSelected={this.onSelected}
-            renderItem={(item) => (<span className='bg-transparent'>{item.name}
-                <br/> Столица: {item.capital}</span>)}/>);
-
-        const countryInfo = (<CountryInfo selectedCountry={this.state.selectedCountry} />);
+        const listItems = (
+            <ApiConsumer>
+                {
+                    ({getAllCountry}) => {
+                        return (
+                            <ListItems 
+                                getData={getAllCountry}
+                                renderItem={(item) => (
+                                    <Link to={`${item.name}`}>
+                                        <span className='bg-transparent'>{item.name}
+                                        <br/> Столица: {item.capital}</span>
+                                    </Link>)}/>
+                        )
+                    }
+                }
+            </ApiConsumer>)
 
         return(
-            <Row left={listItems} right={countryInfo} />
+            <Row left={listItems} right={null} />
         )
     }
 }

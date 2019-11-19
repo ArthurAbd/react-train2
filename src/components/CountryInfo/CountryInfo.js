@@ -1,13 +1,10 @@
 import React from 'react';
-import Api from '../../services/ApiService'
 import Spinner from '../Spinner'
 
 import './CountryInfo.css';
 
 export default class CountryInfo extends React.Component {
     
-    api = new Api()
-
     state = {
         country: {},
         loading: true
@@ -21,11 +18,11 @@ export default class CountryInfo extends React.Component {
     }
 
     getCountry = (selectedCountry) => {
+        const {getOneCountry} = this.props;
         this.setState({loading: true});
-        this.api
-        .getOneCountry(selectedCountry)
-        .then((country) => {
-            this.onLoad(country)
+        getOneCountry(selectedCountry)
+            .then((country) => {
+                this.onLoad(country)
         })
         // .catch(this.onError)
     }
@@ -34,11 +31,11 @@ export default class CountryInfo extends React.Component {
         this.getCountry(this.props.selectedCountry)
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.selectedCountry !== this.props.selectedCountry) {
-            this.getCountry(this.props.selectedCountry)
-        }
-    }
+    // componentDidUpdate(prevProps) {
+    //     if (prevProps.selectedCountry !== this.props.selectedCountry) {
+    //         this.getCountry(this.props.selectedCountry)
+    //     }
+    // }
 
     render() {
         const {country: {name, capital, area,

@@ -27,29 +27,6 @@ export default class ApiService {
         return promise;
     }
 
-    getAllRegionBlock = async () => {
-        const promise = new Promise((resolve, reject) => {
-            const regionBlocks = ['EU (European Union)',
-                'EFTA (European Free Trade Association)',
-                'CARICOM (Caribbean Community)',
-                'PA (Pacific Alliance)',
-                'AU (African Union)',
-                'USAN (Union of South American Nations)',
-                'EEU (Eurasian Economic Union)',
-                'AL (Arab League)',
-                'ASEAN (Association of Southeast Asian Nations)',
-                'CAIS (Central American Integration System)',
-                'CEFTA (Central European Free Trade Agreement)',
-                'NAFTA (North American Free Trade Agreement)',
-                'SAARC (South Asian Association for Regional Cooperation)'];
-
-            const listItems = regionBlocks.map((regionBlock) => ({name: regionBlock}))
-        
-            resolve({listItems})
-        });
-        
-        return promise;
-    }
     
     getOneCountry = async (name) => {
         const country = await this.getResource(`/name/${name}/`);
@@ -58,11 +35,6 @@ export default class ApiService {
 
     getSearchByRegion = async (region) => {
         const countries = await this.getResource(`/region/${region}/`);
-        return this._transformAllCountry(countries);
-    }
-
-    getSearchByRegionBloc = async (regionalBlocs) => {
-        const countries = await this.getResource(`/regionalbloc/${regionalBlocs}/`);
         return this._transformAllCountry(countries);
     }
 

@@ -2,8 +2,12 @@ import React from 'react';
 import Header from '../Header'
 import PageCountry from '../PageCountry'
 import RandomCountry from '../RandomCountry'
-import ListItems from '../ListItems'
 import Api from '../../services/ApiService'
+import CountryInfo from '../CountryInfo'
+import PageRegion from '../PageRegion'
+
+import {ApiProvider} from '../Api-context/Api-context'
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 
 import './App.css';
 
@@ -12,6 +16,7 @@ export default class App extends React.Component {
     api = new Api()
 
     state = {
+        speedUpdateRandonCountry: 3000,
         showRandomCountry: true,
         listCountries: ["Afghanistan", "Åland Islands", "Albania", "Algeria",
         "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica",
@@ -36,52 +41,46 @@ export default class App extends React.Component {
     }
 
     render() {
-        const planet = this.state.showRandomCountry ? <RandomCountry
+        const randomPlanet = this.state.showRandomCountry ? <RandomCountry
+            speedUpdateRandonCountry={this.speedUpdateRandonCountry}
+            getOneCountry={this.api.getOneCountry}
             names={this.state.listCountries} /> : null;
 
         return (
             <div className="app container">
-                <Header />
-                {planet}
-                <button className="toggle-planet btn btn-warning btn-lg m-2"
-                    onClick={this.toggleRandomCountry}>
-                    Вкл/выкл рандом
-                </button>
-                <PageCountry getData={this.api.getAllCountry} />
-                <div className="row">
-                    <div className='page-list col-4'>
-                        <div className='bg-dark p-3 my-2 border-def'>
-                            <ListItems 
-                                getData={this.api.getAllRegion}
-                                onSelected={this.onSelectedRegion}
-                                renderItem={(item) => item.name}
-                                />
-                        </div>
-                    </div>
-                    <div className='page-info country-info col-8'>
-                        <div className='bg-dark p-3 my-2 border-def'>
-                            sss
-                            {/* <CountryInfo selectedCountry={this.state.selectedCountry} /> */}
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className='page-list col-4'>
-                        <div className='bg-dark p-3 my-2 border-def'>
-                            <ListItems 
-                                getData={this.api.getAllRegionBlock}
-                                renderItem={(item) => item.name}
-                                onSelected={this.onSelectedRegionBlock} 
-                                />
-                        </div>
-                    </div>
-                    <div className='page-info country-info col-8'>
-                        <div className='bg-dark p-3 my-2 border-def'>
-                            sss
-                            {/* <CountryInfo selectedCountry={this.state.selectedCountry} /> */}
-                        </div>
-                    </div>
-                </div>
+                <ApiProvider value={this.api}>
+                    <Router>
+                        <Header />
+                        {randomPlanet}
+                        <button className="toggle-planet btn btn-warning btn-lg m-2"
+                            onClick={this.toggleRandomCountry}>
+                            Вкл/выкл рандом
+                        </button>
+
+                        <Switch>
+                            <Route path="/"
+                                exact
+                                render={() =>
+                                    <p className="h2">Добро пожаловать!</p>}/>
+                            <Route path="/country" exact component={PageCountry} />
+                            <Route path="/country/:name"
+                                render={({match}) => {
+                                    const {name} = match.params;
+                                    return (
+                                    <div className='bg-dark p-3 my-2 border-def'>
+                                        <CountryInfo 
+                                            getOneCountry={this.api.getOneCountry}
+                                            selectedCountry={name}/>
+                                    </div>
+                                    )
+                                }} />
+                            <Route path="/page-region" render={() =>
+                                    <PageRegion api={this.api}/>} />
+                            <Route render={() =>
+                                    <p className="h2">Не верный URL</p>} />
+                        </Switch>
+                    </Router>
+                </ApiProvider>
             </div>
         )
     }

@@ -1,9 +1,10 @@
 import React from 'react';
 import Spinner from '../Spinner';
+import PropTypes from 'prop-types';
 
 import './ListItems.css';
 
-export default class ListCountry extends React.Component {
+export default class ListItems extends React.Component {
 
     state = {
         listItems: null
@@ -11,10 +12,12 @@ export default class ListCountry extends React.Component {
 
     componentDidMount() {
         const {getData} = this.props;
-        getData()
+        if (getData) {
+            getData()
             .then((listItems) => {
                 this.setState(listItems)
             })
+        }
     }
 
     renderList = (listItems) => {
@@ -43,4 +46,14 @@ export default class ListCountry extends React.Component {
             </ul>
         )
     }
+}
+
+ListItems.defaultProps = {
+    onSelected: () => {}
+}
+
+ListItems.propTypes = {
+    getData: PropTypes.func.isRequired,
+    renderItem: PropTypes.func.isRequired,
+    onSelected: PropTypes.func
 }
