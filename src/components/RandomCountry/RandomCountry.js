@@ -18,17 +18,20 @@ export default class RandomCountry extends React.Component {
 
     componentDidMount() {
         if (this.props.names) {
-            this.getCountry()
-            this.interval = setInterval(this.getCountry, 1000);
+            this.updateRandomCountry()
         }
     }
 
-    // componentDidUpdate(prevProps) {
-    //     console.log(prevProps)
-    //     if (prevProps.names !== this.props.names) {
-    //         this.getCountry();
-    //     }
-    // }
+    componentDidUpdate(prevProps) {
+        if (prevProps.names !== this.props.names) {
+            this.updateRandomCountry()
+        }
+    }
+
+    updateRandomCountry() {
+        this.getCountry();
+            this.interval = setInterval(this.getCountry, this.props.speedUpdateRandonCountry)
+    }
 
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -102,5 +105,6 @@ RandomCountry.defaultProps = {
 }
 
 RandomCountry.propTypes = {
-    speedUpdateRandonCountry: PropTypes.number
+    speedUpdateRandonCountry: PropTypes.number,
+    names: PropTypes.array
 }

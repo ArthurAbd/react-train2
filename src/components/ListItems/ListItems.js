@@ -7,10 +7,15 @@ import './ListItems.css';
 export default class ListItems extends React.Component {
 
     state = {
-        listItems: null
+        listItems: null,
+        infiniteScrollCount: 0
     }
 
+      
+
     componentDidMount() {
+        Window.onscroll = () => console.log(document.body)
+        
         const {getData} = this.props;
         if (getData) {
             getData()
@@ -20,8 +25,8 @@ export default class ListItems extends React.Component {
         }
     }
 
-    renderList = (listItems) => {
-        return listItems.map((item) => {
+    renderList = (items) => {
+        return items.map((item) => {
             const label = this.props.renderItem(item)
             return (
                 <li key={item.name}
@@ -32,16 +37,43 @@ export default class ListItems extends React.Component {
         })
     }
 
+    infiniteScroll(listItems) {
+        const infiniteScrollCount = this.state.infiniteScrollCount
+        const items = listItems.slice(0, infiniteScrollCount + 10)
+
+        return this.renderList(items)
+    }
+
+    
+
     render() {
         const {listItems} = this.state;
         if (!listItems) {
             return <Spinner />
         }
 
-        const items = this.renderList(listItems);
+        document.onscroll = () => {
+            const height = document.documentElement.scrollHeight
+            const scroll = document.documentElement.scrollTop
+            const clientHeight = document.documentElement.clientHeight
+
+            if (height - clientHeight - scroll === 0) {
+
+                const infiniteScrollCount = this.state.infiniteScrollCount
+                const newInfiniteScrollCount = {
+                    infiniteScrollCount: infiniteScrollCount + 10
+                }
+                this.setState(newInfiniteScrollCount)
+
+                items.push(this.infiniteScroll(listItems))
+            }
+        }
+
+        let items = this.infiniteScroll(listItems)
+        console.log(items)
 
         return (
-            <ul className="list-country overflow-auto list-group list-group-flush list-fix ">
+            <ul className="list-country list-group list-group-flush list-fix ">
                 {items}
             </ul>
         )

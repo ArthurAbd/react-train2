@@ -1,7 +1,6 @@
 import React from 'react';
 import ListItems from '../ListItems'
 import {Link} from 'react-router-dom'
-import Row from '../Row'
 
 import {ApiConsumer} from '../Api-context/Api-context'
 
@@ -29,7 +28,9 @@ export default class PageCountry extends React.Component {
             </ApiConsumer>)
 
         return(
-            <Row left={listItems} right={null} />
+            <React.Fragment>
+                {listItems}
+            </React.Fragment>
         )
     }
 }

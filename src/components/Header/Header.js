@@ -13,9 +13,6 @@ export default () => {
             <Link to="/country/" className="btn btn-dark">
                 Страны
             </Link>
-            <Link to="/page-region/" className="btn btn-dark">
-                Континенты
-            </Link>
         </div>
     )
 }

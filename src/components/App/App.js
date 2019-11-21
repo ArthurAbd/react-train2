@@ -4,7 +4,6 @@ import PageCountry from '../PageCountry'
 import RandomCountry from '../RandomCountry'
 import Api from '../../services/ApiService'
 import CountryInfo from '../CountryInfo'
-import PageRegion from '../PageRegion'
 
 import {ApiProvider} from '../Api-context/Api-context'
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
@@ -16,13 +15,21 @@ export default class App extends React.Component {
     api = new Api()
 
     state = {
-        speedUpdateRandonCountry: 3000,
+        speedUpdateRandonCountry: 2000,
         showRandomCountry: true,
-        listCountries: ["Afghanistan", "Åland Islands", "Albania", "Algeria",
-        "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica",
-        "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia",
-        "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados"]
+        listCountries: null
     };
+
+    componentDidMount() {
+        this.api.getAllCountry()
+            .then(({listItems}) => {
+                const names = listItems.map((item) => item.name)
+                console.log(names)
+                this.setState({
+                    listCountries: names
+                })
+            })
+    }
 
     toggleRandomCountry = () => {
         this.setState((state) => {
@@ -32,17 +39,9 @@ export default class App extends React.Component {
         });
     };
 
-    onSelectedRegion = () => {
-        console.log('region')
-    }
-
-    onSelectedRegionBlock = () => {
-        console.log('regionBlock')
-    }
-
     render() {
-        const randomPlanet = this.state.showRandomCountry ? <RandomCountry
-            speedUpdateRandonCountry={this.speedUpdateRandonCountry}
+        const randomCountry = this.state.showRandomCountry ? <RandomCountry
+            speedUpdateRandonCountry={this.state.speedUpdateRandonCountry}
             getOneCountry={this.api.getOneCountry}
             names={this.state.listCountries} /> : null;
 
@@ -51,7 +50,7 @@ export default class App extends React.Component {
                 <ApiProvider value={this.api}>
                     <Router>
                         <Header />
-                        {randomPlanet}
+                        {randomCountry}
                         <button className="toggle-planet btn btn-warning btn-lg m-2"
                             onClick={this.toggleRandomCountry}>
                             Вкл/выкл рандом
@@ -61,7 +60,7 @@ export default class App extends React.Component {
                             <Route path="/"
                                 exact
                                 render={() =>
-                                    <p className="h2">Добро пожаловать!</p>}/>
+                                    <p className="text-center h2">Добро пожаловать!</p>}/>
                             <Route path="/country" exact component={PageCountry} />
                             <Route path="/country/:name"
                                 render={({match}) => {
@@ -74,8 +73,6 @@ export default class App extends React.Component {
                                     </div>
                                     )
                                 }} />
-                            <Route path="/page-region" render={() =>
-                                    <PageRegion api={this.api}/>} />
                             <Route render={() =>
                                     <p className="h2">Не верный URL</p>} />
                         </Switch>

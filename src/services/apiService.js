@@ -14,29 +14,12 @@ export default class ApiService {
         const countries = await this.getResource('/all/');
         return this._transformAllCountry(countries);
     }
-
-    getAllRegion = async () => {
-        const promise = new Promise((resolve, reject) => {
-            const regions = ["Africa", "Americas", "Asia", "Europe", "Oceania"];
-
-            const listItems = regions.map((region) => ({name: region}))
-
-            resolve({listItems})
-        });
-        
-        return promise;
-    }
-
     
     getOneCountry = async (name) => {
         const country = await this.getResource(`/name/${name}/`);
         return this._transformCountry(country);
     }
 
-    getSearchByRegion = async (region) => {
-        const countries = await this.getResource(`/region/${region}/`);
-        return this._transformAllCountry(countries);
-    }
 
     _transformCountry(country) {
         return {
@@ -60,10 +43,4 @@ export default class ApiService {
         }
     }
 
-    // _transformAllRegion(regions) {
-    //     const listItems = regions.map((region) => ({name: region.name}))
-    //     return {
-    //         listItems
-    //     }
-    // }
 };
